@@ -1,5 +1,6 @@
 name: Deploy Quartz to Pages
 
+# 自動發佈到 GitHub Pages（Quartz 官方 deploy workflow）
 on:
   push:
     branches: [v4]
@@ -26,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18.17
+          node-version: 22
 
       - name: Setup Quartz
         run: npm ci
