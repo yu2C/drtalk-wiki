@@ -5,6 +5,7 @@ tags:
 aliases:
   - 圖奇
   - twitch
+publish: true
 ---
 
 ## 定義

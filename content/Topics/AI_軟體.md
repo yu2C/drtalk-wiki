@@ -8,6 +8,7 @@ aliases:
   - 軟體
   - 隱私計算
   - 算力
+publish: true
 ---
 
 ## 這個主題在整理什麼

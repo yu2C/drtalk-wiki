@@ -83,7 +83,7 @@ content_type:
 - 核心業務：華爾街融資開拓與 Polkadot 生態推廣
 
 ### 推測
-- Polkadot Capital 是 [[Gavin Wood]] 與華爾街建立直接通道的測試
+- Polkadot Capital 是 [[GavinWood]] 與華爾街建立直接通道的測試
 - 資本進場節奏與聯準會降息預期相關（8 月中旬美聯社暗示降息）
 - Kusama-JAM 項目規模較小，可能用於測試生態吸納邊緣創新團隊的能力
 

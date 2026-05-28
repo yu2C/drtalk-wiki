@@ -5,6 +5,7 @@ tags:
 aliases:
   - Real World Assets
   - 真實資產代幣化
+publish: true
 ---
 
 ## 定義

@@ -8,6 +8,7 @@ aliases:
   - 紅幹
   - 堂堂正正
   - A紅幹的男子漢
+publish: true
 ---
 
 # A 紅幹
