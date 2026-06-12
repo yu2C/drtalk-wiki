@@ -103,10 +103,8 @@ def main():
         print("無命中，請換關鍵字，或到網站用搜尋瀏覽相關 Curated 頁。")
         return
 
-    print(format_reading_list(results))
-    print()
-
     if args.no_llm:
+        print(format_reading_list(results))
         return
 
     model = args.model or detect_model()
@@ -119,7 +117,7 @@ def main():
     prompt = f"""你是 DRtalk 公開知識庫助手。只能根據下方摘要回答，禁止引用「允許來源」清單外的篇目或虛構人名機構。
 每個主張必須標註來源檔名與日期。
 若摘要不足以回答，明確說「公開資料中未找到完整說明」，不要臆測。
-回答使用繁體中文。文末不要再重複列延伸閱讀。
+回答使用繁體中文。只輸出回答正文，文末不要列延伸閱讀（系統會自動附上連結）。
 
 === 允許來源 ===
 {allowed}
@@ -132,8 +130,10 @@ def main():
 
 === 回答 ==="""
 
-    print(f"---\n使用模型：{model}，參考 {len(results)} 篇摘要\n")
+    print(f"使用模型：{model}，參考 {len(results)} 篇摘要\n")
     print(ask_ollama(prompt, model))
+    print()
+    print(format_reading_list(results).replace("## 建議閱讀", "## 延伸閱讀"))
 
 
 if __name__ == "__main__":
