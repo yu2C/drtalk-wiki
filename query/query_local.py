@@ -3,8 +3,9 @@
 query_local.py — 用 Ollama 本機模型回答公開 Curated 知識庫（drtalk-wiki/query/）
 
 用法：
-  python3 query_local.py "哪些資產會導致負債？"
-  python3 query_local.py "久哥怎麼看 BTC？" --model qwen2.5:7b-instruct-q4_K_M --top 8
+  uv sync
+  uv run python query_local.py "哪些資產會導致負債？"
+  uv run python query_local.py "久哥怎麼看 BTC？" --model qwen2.5:7b-instruct-q4_K_M --top 8
 """
 
 import argparse

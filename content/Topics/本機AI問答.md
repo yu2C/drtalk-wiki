@@ -27,21 +27,22 @@ publish: true
 ## 快速開始
 
 ```bash
+brew install uv ollama   # 尚未安裝時
+
 git clone https://github.com/yu2C/drtalk-wiki.git
 cd drtalk-wiki/query
-pip install -r requirements.txt
+uv sync
 
-# 安裝 Ollama 並拉模型（macOS: brew install ollama）
 ollama pull qwen2.5:7b-instruct-q4_K_M
 ollama serve   # 另開一個終端視窗保持執行
 
-python3 query_local.py "哪些資產會導致負債？"
+uv run python query_local.py "哪些資產會導致負債？"
 ```
 
 只搜尋、不呼叫 LLM（看命中哪些集）：
 
 ```bash
-python3 search.py "資產 負債" --top 5
+uv run python search.py "資產 負債" --top 5
 ```
 
 ---

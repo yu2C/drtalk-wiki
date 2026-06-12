@@ -2,7 +2,8 @@
 """
 search.py — BM25 + jieba 中文搜索（drtalk-wiki/query/ 獨立版）
 用法：
-  python3 search.py "資產 負債" --top 5
+  uv sync
+  uv run python search.py "資產 負債" --top 5
 輸出：JSON 陣列
 """
 
