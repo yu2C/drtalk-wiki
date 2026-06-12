@@ -39,7 +39,15 @@ ollama serve   # 另開一個終端視窗保持執行
 uv run python query_local.py "哪些資產會導致負債？"
 ```
 
-只搜尋、不呼叫 LLM（看命中哪些集）：
+會先列出 **建議閱讀**（含 [drtalk-wiki](https://yu2c.github.io/drtalk-wiki/) 可點連結），再選用 Ollama 摘要。
+
+只列文章、不呼叫 LLM：
+
+```bash
+uv run python query_local.py "哪些資產會導致負債？" --no-llm
+```
+
+只搜尋 JSON（看命中哪些集）：
 
 ```bash
 uv run python search.py "資產 負債" --top 5
