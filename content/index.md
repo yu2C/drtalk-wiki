@@ -10,6 +10,8 @@ tags:
 
 > **免責聲明**：以下內容純屬虛構，AI 會有幻覺，請勿當真。所有提到的人名及故事皆與現實無關。
 
+想在電腦上用本機 AI 跨篇問答？見 [[Topics/本機AI問答]]（clone [drtalk-wiki](https://github.com/yu2C/drtalk-wiki) 的 `query/` 目錄）。
+
 ---
 
 ## 主題索引
