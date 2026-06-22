@@ -18,6 +18,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HAS_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      HAS_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +37,14 @@ jobs:
 
       - name: Build Quartz
         run: npx quartz build --output public
+
+      - name: Deploy to Cloudflare Pages
+        if: ${{ vars.CLOUDFLARE_PROJECT_NAME != '' && env.HAS_CLOUDFLARE_API_TOKEN == 'true' && env.HAS_CLOUDFLARE_ACCOUNT_ID == 'true' }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
