@@ -1,0 +1,80 @@
+.ask-ai {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  font-size: 0.92rem;
+}
+
+.ask-ai-toggle,
+.ask-ai-form button {
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  background: var(--secondary);
+  color: var(--light);
+  cursor: pointer;
+  font: inherit;
+  min-height: 2.4rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.ask-ai-panel {
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: min(34rem, calc(100vh - 6rem));
+  overflow: auto;
+  margin-bottom: 0.5rem;
+  padding: 0.85rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  background: var(--light);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+
+.ask-ai-panel[hidden] {
+  display: none;
+}
+
+.ask-ai-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ask-ai-form label {
+  color: var(--dark);
+  font-weight: 700;
+}
+
+.ask-ai-form textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 5.5rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  background: var(--light);
+  color: var(--dark);
+  font: inherit;
+  padding: 0.55rem;
+}
+
+.ask-ai-answer {
+  margin-top: 0.8rem;
+  color: var(--darkgray);
+  line-height: 1.55;
+}
+
+.ask-ai-answer p {
+  margin: 0 0 0.7rem;
+  white-space: pre-wrap;
+}
+
+.ask-ai-answer ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 700px) {
+  .ask-ai {
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+}
