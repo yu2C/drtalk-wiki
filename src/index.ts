@@ -21,6 +21,11 @@ type Env = {
 
 const MODEL = "@cf/meta/llama-3.2-3b-instruct"
 const MAX_CONTEXT_CHARS = 9000
+const MAX_QUESTION_CHARS = 200
+const MAX_ANSWER_CHARS = 1200
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX_REQUESTS = 5
+const rateLimits = new Map<string, { count: number; resetAt: number }>()
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -48,6 +53,17 @@ export default {
 }
 
 async function handleAsk(request: Request, env: Env) {
+  const rateLimit = checkRateLimit(request)
+  if (!rateLimit.allowed) {
+    return json(
+      {
+        error: "請稍後再試。每分鐘最多 5 次查詢。",
+        retry_after_seconds: Math.ceil((rateLimit.resetAt - Date.now()) / 1000),
+      },
+      429,
+    )
+  }
+
   let question = ""
   try {
     const body = (await request.json()) as { question?: string }
@@ -58,6 +74,10 @@ async function handleAsk(request: Request, env: Env) {
 
   if (question.length < 2) {
     return json({ error: "Question is too short." }, 400)
+  }
+
+  if (question.length > MAX_QUESTION_CHARS) {
+    return json({ error: `Question is too long. Maximum is ${MAX_QUESTION_CHARS} characters.` }, 400)
   }
 
   let matches: SearchEntry[]
@@ -113,10 +133,12 @@ async function handleAsk(request: Request, env: Env) {
         },
         { role: "user", content: prompt },
       ],
+      max_tokens: 650,
+      temperature: 0.2,
     })
 
     return json({
-      answer: extractAiText(result),
+      answer: limitText(extractAiText(result), MAX_ANSWER_CHARS),
       sources: matches.map(toSource),
       mode: "ai",
       model: MODEL,
@@ -249,6 +271,38 @@ function extractAiText(result: unknown) {
     if (typeof record.text === "string") return record.text
   }
   return "Workers AI 已回應，但格式無法解析。請查看來源連結。"
+}
+
+function checkRateLimit(request: Request) {
+  const ip =
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown"
+  const now = Date.now()
+
+  for (const [key, bucket] of rateLimits) {
+    if (bucket.resetAt <= now) rateLimits.delete(key)
+  }
+
+  const bucket = rateLimits.get(ip)
+  if (!bucket || bucket.resetAt <= now) {
+    const resetAt = now + RATE_LIMIT_WINDOW_MS
+    rateLimits.set(ip, { count: 1, resetAt })
+    return { allowed: true, resetAt }
+  }
+
+  if (bucket.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return { allowed: false, resetAt: bucket.resetAt }
+  }
+
+  bucket.count += 1
+  return { allowed: true, resetAt: bucket.resetAt }
+}
+
+function limitText(text: string, maxChars: number) {
+  const trimmed = text.trim()
+  if (trimmed.length <= maxChars) return trimmed
+  return `${trimmed.slice(0, maxChars)}...`
 }
 
 function json(body: unknown, status = 200) {
