@@ -62,7 +62,7 @@ async function handleAsk(request: Request, env: Env) {
 
   let matches: SearchEntry[]
   try {
-    const index = await loadIndex(request, env)
+    const index = await loadIndex()
     matches = searchIndex(index, question).slice(0, 8)
   } catch (error) {
     return json(
@@ -131,16 +131,11 @@ async function handleAsk(request: Request, env: Env) {
   }
 }
 
-async function loadIndex(request: Request, env: Env): Promise<SearchEntry[]> {
-  const assetUrl = new URL("/query/search-index.json", request.url)
-  let response = await env.ASSETS.fetch(new Request(assetUrl))
-
-  if (!response.ok) {
-    response = await fetch(
-      "https://raw.githubusercontent.com/yu2C/drtalk-wiki/v4/query/search-index.json",
-      { cf: { cacheTtl: 300, cacheEverything: true } } as RequestInit,
-    )
-  }
+async function loadIndex(): Promise<SearchEntry[]> {
+  const response = await fetch(
+    "https://raw.githubusercontent.com/yu2C/drtalk-wiki/v4/query/search-index.json",
+    { cf: { cacheTtl: 300, cacheEverything: true } } as RequestInit,
+  )
 
   if (!response.ok) {
     throw new Error(`Unable to load search index: ${response.status}`)
