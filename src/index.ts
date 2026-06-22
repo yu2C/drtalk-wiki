@@ -60,8 +60,19 @@ async function handleAsk(request: Request, env: Env) {
     return json({ error: "Question is too short." }, 400)
   }
 
-  const index = await loadIndex(request, env)
-  const matches = searchIndex(index, question).slice(0, 8)
+  let matches: SearchEntry[]
+  try {
+    const index = await loadIndex(request, env)
+    matches = searchIndex(index, question).slice(0, 8)
+  } catch (error) {
+    return json(
+      {
+        error: "Unable to load the public search index.",
+        detail: error instanceof Error ? error.message : String(error),
+      },
+      500,
+    )
+  }
 
   if (matches.length === 0) {
     return json({

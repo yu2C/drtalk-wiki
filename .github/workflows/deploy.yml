@@ -38,6 +38,11 @@ jobs:
       - name: Build Quartz
         run: npx quartz build --output public
 
+      - name: Add ask index asset
+        run: |
+          mkdir -p public/query
+          cp query/search-index.json public/query/search-index.json
+
       - name: Deploy to Cloudflare Workers
         if: ${{ vars.CLOUDFLARE_DIRECT_DEPLOY == 'true' && vars.CLOUDFLARE_PROJECT_NAME != '' && env.HAS_CLOUDFLARE_API_TOKEN == 'true' && env.HAS_CLOUDFLARE_ACCOUNT_ID == 'true' }}
         uses: cloudflare/wrangler-action@v3
