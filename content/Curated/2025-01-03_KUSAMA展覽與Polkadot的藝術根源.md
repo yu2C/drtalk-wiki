@@ -1,4 +1,5 @@
 ---
+publish: true
 date: 2025-01-03
 tags:
   - topic/藝術
@@ -16,6 +17,8 @@ content_type:
   - observation
 status: ready
 ---
+> 日期語境：本文整理自 2025-01-03 的當時觀點；投資與市場判斷請以該日期的市場環境理解。
+
 
 ## 整理版段落
 

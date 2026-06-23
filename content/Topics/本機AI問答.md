@@ -15,6 +15,8 @@ publish: true
 
 不需 API 費用；資料來自 [drtalk-wiki](https://github.com/yu2C/drtalk-wiki) 公開 repo 的 `query/` 目錄。
 
+> 公開 Quartz 網站的低流量問答，建議使用 Cloudflare Worker + Workers AI；本頁方案保留給私密、離線、本機使用。部署規劃維護文件：`Publish/CLOUDFLARE_QUARTZ_SETUP.md`。
+
 ---
 
 ## 適合誰

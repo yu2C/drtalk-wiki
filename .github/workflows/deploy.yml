@@ -38,18 +38,13 @@ jobs:
       - name: Build Quartz
         run: npx quartz build --output public
 
-      - name: Add ask index asset
-        run: |
-          mkdir -p public/query
-          cp query/search-index.json public/query/search-index.json
-
-      - name: Deploy to Cloudflare Workers
+      - name: Deploy to Cloudflare Pages
         if: ${{ vars.CLOUDFLARE_DIRECT_DEPLOY == 'true' && vars.CLOUDFLARE_PROJECT_NAME != '' && env.HAS_CLOUDFLARE_API_TOKEN == 'true' && env.HAS_CLOUDFLARE_ACCOUNT_ID == 'true' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+          command: pages deploy public --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -67,3 +62,35 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Smoke test public site
+        if: ${{ vars.PUBLIC_SITE_URL != '' }}
+        shell: bash
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          PRIVATE_SMOKE_PATH: ${{ vars.PRIVATE_SMOKE_PATH }}
+        run: |
+          set -euo pipefail
+          base="${PUBLIC_SITE_URL%/}"
+          echo "Smoke testing $base"
+
+          home_status="$(curl -L -s -o /tmp/home.html -w "%{http_code}" "$base/")"
+          echo "home: $home_status"
+          test "$home_status" -lt 400
+
+          ask_status="$(curl -L -s -o /tmp/ask.json -w "%{http_code}" \
+            -H "content-type: application/json" \
+            --data '{"question":"財富自由是什麼？"}' \
+            "$base/api/ask" || true)"
+          echo "api/ask: $ask_status"
+          test "$ask_status" -lt 500
+
+          if [ -n "${PRIVATE_SMOKE_PATH:-}" ]; then
+            private_url="$base/$PRIVATE_SMOKE_PATH"
+            private_status="$(curl -L -s -o /tmp/private.html -w "%{http_code}" "$private_url" || true)"
+            echo "private path: $private_status"
+            if [ "$private_status" != "403" ] && [ "$private_status" != "404" ]; then
+              echo "Private smoke path is public: $private_url"
+              exit 1
+            fi
+          fi
